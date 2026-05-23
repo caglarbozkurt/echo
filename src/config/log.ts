@@ -18,6 +18,6 @@ export const logEntries: LogEntry[] = [
     title: "What is echo?",
     description:
       "An intro to echo — what it is, how to publish, and what's coming next.",
-    url: "/d/_qGDhtrl",
+    url: "/d/wIr2I5GD",
   },
 ];
