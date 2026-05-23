@@ -1,5 +1,5 @@
 import { Marked, type Tokens } from "marked";
-import DOMPurify from "isomorphic-dompurify";
+import sanitizeHtml from "sanitize-html";
 
 export type Heading = {
   level: number;
@@ -44,9 +44,7 @@ export function parseMarkdown(source: string): { html: string; headings: Heading
         seen.add(candidate);
         headings.push({ level: token.depth, text: token.text, id: candidate });
 
-        // Render inline content (bold, code, links, etc.) without relying on
-        // a `this.parser` binding — m.parseInline handles inline tokens reliably
-        // across dev and production builds.
+        // Render inline content without relying on `this.parser` binding
         let inner: string;
         try {
           inner = m.parseInline(token.text) as string;
@@ -59,9 +57,17 @@ export function parseMarkdown(source: string): { html: string; headings: Heading
     },
   });
 
-  const html = m.parse(source) as string;
-  return {
-    html: DOMPurify.sanitize(html, { ADD_ATTR: ["id"] }),
-    headings,
-  };
+  const rawHtml = m.parse(source) as string;
+
+  const html = sanitizeHtml(rawHtml, {
+    allowedTags: sanitizeHtml.defaults.allowedTags,
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      "*": ["id"],
+      a: ["href", "name", "target", "rel"],
+      img: ["src", "alt", "title"],
+    },
+  });
+
+  return { html, headings };
 }
