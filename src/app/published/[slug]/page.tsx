@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDocBySlug } from "@/lib/db";
 import { CopyButton } from "@/components/CopyButton";
+import { getBaseUrl } from "@/lib/baseUrl";
 
 export const dynamic = "force-dynamic";
 
@@ -14,8 +15,7 @@ export default async function PublishedPage({
   const doc = await getDocBySlug(slug);
   if (!doc) notFound();
 
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? "";
-  const url = `${base}/d/${slug}`;
+  const url = `${getBaseUrl()}/d/${slug}`;
 
   return (
     <main className="container">

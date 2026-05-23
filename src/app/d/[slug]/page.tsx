@@ -6,12 +6,12 @@ import { verifyPassword, signSlugToken, verifySlugToken } from "@/lib/auth";
 import { parseMarkdown } from "@/lib/markdown";
 import { BrandHeader } from "@/components/BrandHeader";
 import { TableOfContents } from "@/components/TableOfContents";
+import { getBaseUrl } from "@/lib/baseUrl";
 
 export const dynamic = "force-dynamic";
 
 function buildShareUrl(slug: string): string {
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? "";
-  return `${base}/d/${slug}`;
+  return `${getBaseUrl()}/d/${slug}`;
 }
 
 export async function generateMetadata({

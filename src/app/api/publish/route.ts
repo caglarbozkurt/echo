@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { nanoid } from "nanoid";
 import bcrypt from "bcryptjs";
 import { insertDoc } from "@/lib/db";
+import { getBaseUrl } from "@/lib/baseUrl";
 
 export const runtime = "nodejs";
 
@@ -55,6 +56,5 @@ export async function POST(req: NextRequest) {
     indexable: indexable === true,
   });
 
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? "";
-  return NextResponse.json({ slug, url: `${base}/d/${slug}` });
+  return NextResponse.json({ slug, url: `${getBaseUrl()}/d/${slug}` });
 }

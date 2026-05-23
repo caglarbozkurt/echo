@@ -5,6 +5,7 @@
  */
 
 import { NextResponse } from "next/server";
+import { getBaseUrl } from "@/lib/baseUrl";
 
 export const dynamic = "force-dynamic";
 
@@ -135,7 +136,7 @@ After publishing, summarize for the user:
 }
 
 export async function GET() {
-  const host = process.env.NEXT_PUBLIC_BASE_URL ?? "https://echo.example.com";
+  const host = getBaseUrl();
   const body = buildSkillMd(host);
   return new NextResponse(body, {
     headers: {

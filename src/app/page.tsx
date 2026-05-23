@@ -1,5 +1,6 @@
 import { PublishForm } from "@/components/PublishForm";
 import { logEntries } from "@/config/log";
+import { getBaseUrl } from "@/lib/baseUrl";
 
 function formatLogDate(iso: string): string {
   const d = new Date(iso);
@@ -17,7 +18,7 @@ export default async function Home({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
-  const host = process.env.NEXT_PUBLIC_BASE_URL ?? "https://echo.example.com";
+  const host = getBaseUrl();
 
   return (
     <main className="container">
