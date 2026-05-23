@@ -29,7 +29,6 @@ export function parseMarkdown(source: string): { html: string; headings: Heading
         // Render inner content with inline formatting (bold, code, links, etc.)
         let innerHtml: string;
         try {
-          // @ts-expect-error marked v15 renderer has access to this.parser at runtime
           innerHtml = this.parser.parseInline(token.tokens);
         } catch {
           innerHtml = token.text;
