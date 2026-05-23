@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { getDocBySlug, type DocRow } from "@/lib/db";
@@ -11,6 +12,39 @@ export const dynamic = "force-dynamic";
 function buildShareUrl(slug: string): string {
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? "";
   return `${base}/d/${slug}`;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const doc = await getDocBySlug(slug);
+  if (!doc) {
+    return {
+      title: "Not found",
+      robots: { index: false, follow: false },
+    };
+  }
+  const pageTitle = doc.title || "Document";
+  // Doc pages are share-by-link, not discover-via-search. noindex by default
+  // in v0; will become opt-in (per-doc) once accounts ship.
+  return {
+    title: pageTitle,
+    description: doc.title ? `${doc.title} — published on echo` : "A document published on echo",
+    robots: { index: false, follow: false },
+    openGraph: {
+      title: pageTitle,
+      description: doc.title || "Published on echo",
+      type: "article",
+      url: `/d/${slug}`,
+    },
+    twitter: {
+      card: "summary",
+      title: pageTitle,
+    },
+  };
 }
 
 export default async function DocPage({
@@ -35,7 +69,6 @@ export default async function DocPage({
     return renderDoc(doc, slug);
   }
 
-  // Password gate — no shareUrl, no copy button. Link isn't useful before unlock.
   return (
     <>
       <BrandHeader title={doc.title} createdAt={doc.created_at} />

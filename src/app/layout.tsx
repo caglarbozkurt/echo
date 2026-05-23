@@ -1,9 +1,30 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+const title = "echo — share HTML and Markdown with a short link";
+const description =
+  "Drop an HTML or Markdown file, get a short, optionally password-protected link. Built for AI agents and humans — no infrastructure setup.";
+
 export const metadata: Metadata = {
-  title: "echo",
-  description: "Agent-native HTML/MD sharing.",
+  metadataBase: new URL(baseUrl),
+  title: {
+    default: title,
+    template: "%s · echo",
+  },
+  description,
+  openGraph: {
+    title,
+    description,
+    url: "/",
+    siteName: "echo",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

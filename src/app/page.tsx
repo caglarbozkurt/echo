@@ -1,4 +1,15 @@
 import { PublishForm } from "@/components/PublishForm";
+import { logEntries } from "@/config/log";
+
+function formatLogDate(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
 
 export default async function Home({
   searchParams,
@@ -33,6 +44,28 @@ export default async function Home({
         </div>
         <PublishForm initialError={error} />
       </div>
+
+      {logEntries.length > 0 && (
+        <section className="log-section">
+          <div className="callout-header">
+            <span className="echo-badge humans">Log</span>
+            <span className="callout-subtitle">News and updates</span>
+          </div>
+          <ul className="log-list">
+            {logEntries.map((entry) => (
+              <li className="log-entry" key={entry.url}>
+                <a href={entry.url}>
+                  <time className="log-entry-date mono" dateTime={entry.date}>
+                    {formatLogDate(entry.date)}
+                  </time>
+                  <span className="log-entry-title">{entry.title}</span>
+                  <p className="log-entry-desc">{entry.description}</p>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </main>
   );
 }
