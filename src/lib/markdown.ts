@@ -17,23 +17,24 @@ function slugify(text: string): string {
     .replace(/-+/g, "-");
 }
 
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export function parseMarkdown(source: string): { html: string; headings: Heading[] } {
   const headings: Heading[] = [];
   const seen = new Set<string>();
 
-  const marked = new Marked();
+  const m = new Marked();
 
-  marked.use({
+  m.use({
     renderer: {
       heading(token: Tokens.Heading): string {
-        // Render inner content with inline formatting (bold, code, links, etc.)
-        let innerHtml: string;
-        try {
-          innerHtml = this.parser.parseInline(token.tokens);
-        } catch {
-          innerHtml = token.text;
-        }
-
         const base = slugify(token.text) || "section";
         let candidate = base;
         let n = 1;
@@ -41,15 +42,24 @@ export function parseMarkdown(source: string): { html: string; headings: Heading
           candidate = `${base}-${n++}`;
         }
         seen.add(candidate);
-
         headings.push({ level: token.depth, text: token.text, id: candidate });
 
-        return `<h${token.depth} id="${candidate}">${innerHtml}</h${token.depth}>\n`;
+        // Render inline content (bold, code, links, etc.) without relying on
+        // a `this.parser` binding — m.parseInline handles inline tokens reliably
+        // across dev and production builds.
+        let inner: string;
+        try {
+          inner = m.parseInline(token.text) as string;
+        } catch {
+          inner = escapeHtml(token.text);
+        }
+
+        return `<h${token.depth} id="${candidate}">${inner}</h${token.depth}>\n`;
       },
     },
   });
 
-  const html = marked.parse(source) as string;
+  const html = m.parse(source) as string;
   return {
     html: DOMPurify.sanitize(html, { ADD_ATTR: ["id"] }),
     headings,
