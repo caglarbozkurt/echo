@@ -28,12 +28,15 @@ export async function generateMetadata({
     };
   }
   const pageTitle = doc.title || "Document";
-  // Doc pages are share-by-link, not discover-via-search. noindex by default
-  // in v0; will become opt-in (per-doc) once accounts ship.
+  // Indexable is opt-in per doc. Default false → noindex.
+  // Password-protected docs are always noindex regardless of the flag.
+  const allowIndex = doc.indexable && !doc.password_hash;
   return {
     title: pageTitle,
     description: doc.title ? `${doc.title} — published on echo` : "A document published on echo",
-    robots: { index: false, follow: false },
+    robots: allowIndex
+      ? { index: true, follow: true }
+      : { index: false, follow: false },
     openGraph: {
       title: pageTitle,
       description: doc.title || "Published on echo",

@@ -172,6 +172,14 @@ export function PublishForm({ initialError }: { initialError?: string }) {
         </div>
       </div>
 
+      <div className="checkbox-row">
+        <input type="checkbox" id="indexable" name="indexable" />
+        <label htmlFor="indexable">
+          Allow search engines to index this page
+          <span className="checkbox-hint">— off by default, so docs stay share-by-link</span>
+        </label>
+      </div>
+
       <div className="actions">
         <button type="submit" className="btn-primary" disabled={!content.trim()}>
           Publish →

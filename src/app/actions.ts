@@ -10,6 +10,7 @@ export async function publishFromForm(formData: FormData) {
   const formatRaw = String(formData.get("format") ?? "md");
   const title = String(formData.get("title") ?? "").trim() || null;
   const password = String(formData.get("password") ?? "");
+  const indexable = formData.get("indexable") === "on";
 
   if (!content) redirect("/?error=empty");
   if (formatRaw !== "html" && formatRaw !== "md") redirect("/?error=format");
@@ -24,6 +25,7 @@ export async function publishFromForm(formData: FormData) {
     content,
     password_hash: passwordHash,
     title,
+    indexable,
   });
 
   redirect(`/published/${slug}`);

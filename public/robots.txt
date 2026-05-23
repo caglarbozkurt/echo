@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
-Disallow: /d/
-Disallow: /published/
 Disallow: /api/
+Disallow: /published/
+
+# Note: doc pages at /d/<slug> are crawlable but emit per-page robots meta.
+# Default is noindex. Publishers can opt-in via `indexable: true` at publish time.

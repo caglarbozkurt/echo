@@ -33,5 +33,6 @@ export interface DocumentRow {
   content: string;
   password_hash: string | null;
   title: string | null;
+  indexable: boolean;
   created_at: string;
 }

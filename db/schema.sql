@@ -14,6 +14,7 @@ CREATE TABLE documents (
   content TEXT NOT NULL,
   password_hash TEXT,
   title TEXT,
+  indexable BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
@@ -25,6 +26,7 @@ COMMENT ON COLUMN documents.format IS 'md = Markdown (server-rendered), html = H
 COMMENT ON COLUMN documents.content IS 'Full document source, max 2 MB';
 COMMENT ON COLUMN documents.password_hash IS 'bcrypt hash if password-protected, NULL if public';
 COMMENT ON COLUMN documents.title IS 'Optional display title shown on password gate and navbar';
+COMMENT ON COLUMN documents.indexable IS 'If true, search engines can index this doc. Default false (noindex).';
 
 -- ============================================
 -- Row Level Security

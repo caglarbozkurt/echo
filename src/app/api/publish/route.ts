@@ -18,11 +18,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "invalid_json" }, { status: 400 });
   }
 
-  const { content, format, password, title } = (body ?? {}) as {
+  const { content, format, password, title, indexable } = (body ?? {}) as {
     content?: unknown;
     format?: unknown;
     password?: unknown;
     title?: unknown;
+    indexable?: unknown;
   };
 
   if (typeof content !== "string" || content.length === 0 || content.length > MAX_CONTENT) {
@@ -37,6 +38,9 @@ export async function POST(req: NextRequest) {
   if (title !== undefined && (typeof title !== "string" || title.length > 200)) {
     return NextResponse.json({ error: "invalid_title" }, { status: 400 });
   }
+  if (indexable !== undefined && typeof indexable !== "boolean") {
+    return NextResponse.json({ error: "invalid_indexable" }, { status: 400 });
+  }
 
   const slug = nanoid(8);
   const passwordHash =
@@ -48,6 +52,7 @@ export async function POST(req: NextRequest) {
     content,
     password_hash: passwordHash,
     title: typeof title === "string" ? title : null,
+    indexable: indexable === true,
   });
 
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? "";

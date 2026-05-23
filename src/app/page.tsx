@@ -17,6 +17,7 @@ export default async function Home({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
+  const host = process.env.NEXT_PUBLIC_BASE_URL ?? "https://echo.example.com";
 
   return (
     <main className="container">
@@ -29,7 +30,7 @@ export default async function Home({
           <code className="callout-subtitle mono">POST /api/publish</code>
         </div>
         <pre className="agent-snippet mono">
-{`curl -X POST $HOST/api/publish \\
+{`curl -X POST ${host}/api/publish \\
   -H "Content-Type: application/json" \\
   -d '{ "content": "...", "format": "md" }'`}
         </pre>

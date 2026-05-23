@@ -1,6 +1,5 @@
 /**
  * Document store — Supabase-backed.
- * Same interface as the previous in-memory stub; swap was a single-file change.
  */
 
 import { supabase, type DocumentRow } from "@/lib/supabase";
@@ -11,6 +10,7 @@ export type DocRow = {
   content: string;
   password_hash: string | null;
   title: string | null;
+  indexable: boolean;
   created_at: Date;
 };
 
@@ -24,7 +24,7 @@ function rowToDoc(row: DocumentRow): DocRow {
 export async function getDocBySlug(slug: string): Promise<DocRow | null> {
   const { data, error } = await supabase
     .from("documents")
-    .select("slug, format, content, password_hash, title, created_at")
+    .select("slug, format, content, password_hash, title, indexable, created_at")
     .eq("slug", slug)
     .maybeSingle<DocumentRow>();
 
@@ -42,6 +42,7 @@ export async function insertDoc(doc: Omit<DocRow, "created_at">): Promise<void> 
     content: doc.content,
     password_hash: doc.password_hash,
     title: doc.title,
+    indexable: doc.indexable,
   });
 
   if (error) {
