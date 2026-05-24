@@ -1,4 +1,5 @@
 import { PublishForm } from "@/components/PublishForm";
+import { Footer } from "@/components/Footer";
 import { logEntries } from "@/config/log";
 import { getBaseUrl } from "@/lib/baseUrl";
 
@@ -21,7 +22,8 @@ export default async function Home({
   const host = getBaseUrl();
 
   return (
-    <main className="container">
+    <>
+      <main className="container">
       <h1 className="brand">echo</h1>
       <p className="tagline">The agent-native way to share HTML and Markdown.</p>
 
@@ -74,6 +76,8 @@ export default async function Home({
           </ul>
         </section>
       )}
-    </main>
+      </main>
+      <Footer />
+    </>
   );
 }

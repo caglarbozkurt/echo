@@ -6,6 +6,7 @@ import { verifyPassword, signSlugToken, verifySlugToken } from "@/lib/auth";
 import { parseMarkdown } from "@/lib/markdown";
 import { BrandHeader } from "@/components/BrandHeader";
 import { TableOfContents } from "@/components/TableOfContents";
+import { Footer } from "@/components/Footer";
 import { getBaseUrl } from "@/lib/baseUrl";
 
 export const dynamic = "force-dynamic";
@@ -98,6 +99,7 @@ export default async function DocPage({
           </p>
         )}
       </main>
+      <Footer />
     </>
   );
 }
@@ -139,6 +141,7 @@ function renderDoc(doc: DocRow, slug: string) {
           {hasToc && <TableOfContents headings={headings} />}
           <article className="doc-article" dangerouslySetInnerHTML={{ __html: html }} />
         </div>
+        <Footer />
       </>
     );
   }

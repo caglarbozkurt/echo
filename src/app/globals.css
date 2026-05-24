@@ -793,6 +793,71 @@ input[type="password"]:focus {
   gap: 8px;
 }
 
+/* Site footer */
+.site-footer {
+  border-top: 2px solid var(--border);
+  background: var(--surface);
+  padding: 24px;
+  margin-top: 96px;
+}
+.site-footer-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  font-size: 13px;
+  color: var(--text-2);
+  flex-wrap: wrap;
+}
+.site-footer-brand {
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+.site-footer-brand:hover {
+  text-decoration: none;
+}
+.site-footer-cursor {
+  color: var(--accent);
+  animation: blink 1.2s steps(2) infinite;
+}
+.site-footer-sep {
+  color: var(--ghost);
+}
+.site-footer-meta {
+  color: var(--text-2);
+}
+.site-footer-meta a {
+  color: var(--text);
+  font-weight: 600;
+  text-decoration-color: var(--accent);
+}
+.site-footer-heart {
+  color: var(--accent);
+  display: inline-block;
+  animation: heartbeat 1.6s ease-in-out infinite;
+  transform-origin: center;
+}
+@keyframes heartbeat {
+  0%, 40%, 100% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(1.25);
+  }
+  30% {
+    transform: scale(1.1);
+  }
+}
+.site-footer-link {
+  color: var(--text);
+  font-weight: 600;
+  text-decoration-color: var(--accent);
+}
+
 /* Mobile */
 @media (max-width: 600px) {
   .container {

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDocBySlug } from "@/lib/db";
 import { CopyButton } from "@/components/CopyButton";
+import { Footer } from "@/components/Footer";
 import { getBaseUrl } from "@/lib/baseUrl";
 
 export const dynamic = "force-dynamic";
@@ -18,7 +19,8 @@ export default async function PublishedPage({
   const url = `${getBaseUrl()}/d/${slug}`;
 
   return (
-    <main className="container">
+    <>
+      <main className="container">
       <h1 className="brand">echo</h1>
       <p className="tagline">✓ Published.</p>
 
@@ -53,6 +55,8 @@ export default async function PublishedPage({
       <Link href="/" className="link-primary">
         Publish another →
       </Link>
-    </main>
+      </main>
+      <Footer />
+    </>
   );
 }
