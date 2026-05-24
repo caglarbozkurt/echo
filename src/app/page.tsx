@@ -33,7 +33,13 @@ export default async function Home({
         <pre className="agent-snippet mono">
 {`curl -X POST ${host}/api/publish \\
   -H "Content-Type: application/json" \\
-  -d '{ "content": "...", "format": "md" }'`}
+  -d '{
+    "content": "...",
+    "format": "md",
+    "password": "optional",
+    "title": "optional",
+    "indexable": false
+  }'`}
         </pre>
         <a href="/skill.md" download className="agent-footer-link mono">
           ↓ SKILL.md — drop-in instructions for Claude, Cursor, and other agents
