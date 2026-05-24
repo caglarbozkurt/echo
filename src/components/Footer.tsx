@@ -22,15 +22,6 @@ export function Footer() {
             ♥
           </span>
         </span>
-        <span className="site-footer-sep">·</span>
-        <a
-          href="https://github.com/caglarbozkurt/echo"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="site-footer-link"
-        >
-          source
-        </a>
       </div>
     </footer>
   );
