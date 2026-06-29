@@ -13,8 +13,8 @@ export async function publishFromForm(formData: FormData) {
   const indexable = formData.get("indexable") === "on";
 
   if (!content) redirect("/?error=empty");
-  if (formatRaw !== "html" && formatRaw !== "md") redirect("/?error=format");
-  const format = formatRaw as "html" | "md";
+  if (formatRaw !== "html" && formatRaw !== "md" && formatRaw !== "pdf") redirect("/?error=format");
+  const format = formatRaw as "html" | "md" | "pdf";
 
   const slug = nanoid(8);
   const passwordHash = password ? await bcrypt.hash(password, 10) : null;

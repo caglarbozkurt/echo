@@ -145,6 +145,19 @@ function renderDoc(doc: DocRow, slug: string) {
       </>
     );
   }
+  if (doc.format === "pdf") {
+    return (
+      <>
+        <BrandHeader title={doc.title} createdAt={doc.created_at} shareUrl={shareUrl} />
+        <iframe
+          src={`/d/${slug}/pdf`}
+          className="doc-iframe"
+          title={doc.title || "PDF document"}
+        />
+      </>
+    );
+  }
+  // HTML
   return (
     <>
       <BrandHeader title={doc.title} createdAt={doc.created_at} shareUrl={shareUrl} />

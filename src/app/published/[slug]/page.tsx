@@ -47,7 +47,13 @@ export default async function PublishedPage({
           </>
         )}
         <dt>Format</dt>
-        <dd>{doc.format === "md" ? "Markdown" : "HTML"}</dd>
+        <dd>
+          {doc.format === "md"
+            ? "Markdown"
+            : doc.format === "html"
+              ? "HTML"
+              : "PDF"}
+        </dd>
         <dt>Password</dt>
         <dd>{doc.password_hash ? "Yes" : "No"}</dd>
       </dl>

@@ -6,7 +6,7 @@ import { getBaseUrl } from "@/lib/baseUrl";
 
 export const runtime = "nodejs";
 
-const FORMATS = new Set(["html", "md"]);
+const FORMATS = new Set(["html", "md", "pdf"]);
 const MAX_CONTENT = 2 * 1024 * 1024;
 
 // v0: no auth on this endpoint. Same risk profile as the web form (also unauth'd).
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
 
   await insertDoc({
     slug,
-    format: format as "html" | "md",
+    format: format as "html" | "md" | "pdf",
     content,
     password_hash: passwordHash,
     title: typeof title === "string" ? title : null,

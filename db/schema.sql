@@ -10,7 +10,7 @@
 -- ============================================
 CREATE TABLE documents (
   slug TEXT PRIMARY KEY,
-  format TEXT NOT NULL CHECK (format IN ('html', 'md')),
+  format TEXT NOT NULL CHECK (format IN ('html', 'md', 'pdf')),
   content TEXT NOT NULL,
   password_hash TEXT,
   title TEXT,
@@ -22,7 +22,7 @@ CREATE INDEX idx_documents_created_at ON documents(created_at DESC);
 
 COMMENT ON TABLE documents IS 'Published HTML/MD documents shared via short URL';
 COMMENT ON COLUMN documents.slug IS '8-character nanoid, used as the share URL path';
-COMMENT ON COLUMN documents.format IS 'md = Markdown (server-rendered), html = HTML (sandboxed iframe)';
+COMMENT ON COLUMN documents.format IS 'md = Markdown (server-rendered), html = HTML (sandboxed iframe), pdf = PDF (content is base64-encoded bytes)';
 COMMENT ON COLUMN documents.content IS 'Full document source, max 2 MB';
 COMMENT ON COLUMN documents.password_hash IS 'bcrypt hash if password-protected, NULL if public';
 COMMENT ON COLUMN documents.title IS 'Optional display title shown on password gate and navbar';

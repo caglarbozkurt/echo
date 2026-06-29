@@ -4,7 +4,7 @@ import { useRef, useState, type ChangeEvent, type DragEvent } from "react";
 import { publishFromForm } from "@/app/actions";
 
 type Tab = "upload" | "paste";
-type Format = "md" | "html";
+type Format = "md" | "html" | "pdf";
 
 const MAX_FILE = 2 * 1024 * 1024;
 
@@ -12,7 +12,22 @@ function detectFormat(name: string): Format | null {
   const lower = name.toLowerCase();
   if (lower.endsWith(".md") || lower.endsWith(".markdown")) return "md";
   if (lower.endsWith(".html") || lower.endsWith(".htm")) return "html";
+  if (lower.endsWith(".pdf")) return "pdf";
   return null;
+}
+
+function readFileAsBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      // strip the "data:<mime>;base64," prefix
+      const comma = result.indexOf(",");
+      resolve(comma >= 0 ? result.slice(comma + 1) : result);
+    };
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
 }
 
 export function PublishForm({ initialError }: { initialError?: string }) {
@@ -29,10 +44,16 @@ export function PublishForm({ initialError }: { initialError?: string }) {
       setClientError(`File too large (max 2 MB, got ${(file.size / 1024 / 1024).toFixed(1)} MB).`);
       return;
     }
-    const text = await file.text();
-    setContent(text);
-    setFileName(file.name);
     const detected = detectFormat(file.name);
+
+    if (detected === "pdf") {
+      const base64 = await readFileAsBase64(file);
+      setContent(base64);
+    } else {
+      const text = await file.text();
+      setContent(text);
+    }
+    setFileName(file.name);
     if (detected) setFormat(detected);
     setClientError(null);
   }
@@ -92,7 +113,7 @@ export function PublishForm({ initialError }: { initialError?: string }) {
           <input
             ref={fileInputRef}
             type="file"
-            accept=".md,.markdown,.html,.htm,.txt"
+            accept=".md,.markdown,.html,.htm,.pdf,.txt"
             onChange={onFileInput}
             style={{ display: "none" }}
           />
@@ -101,8 +122,16 @@ export function PublishForm({ initialError }: { initialError?: string }) {
               <div className="dropzone-icon">✓</div>
               <div className="dropzone-title">{fileName}</div>
               <div className="dropzone-subtitle">
-                {(content.length / 1024).toFixed(1)} KB · detected:{" "}
-                {format === "md" ? "Markdown" : "HTML"} · click to change
+                {format === "pdf"
+                  ? `${((content.length * 0.75) / 1024).toFixed(1)} KB`
+                  : `${(content.length / 1024).toFixed(1)} KB`}{" "}
+                · detected:{" "}
+                {format === "md"
+                  ? "Markdown"
+                  : format === "html"
+                    ? "HTML"
+                    : "PDF"}{" "}
+                · click to change
               </div>
             </>
           ) : (
@@ -110,7 +139,7 @@ export function PublishForm({ initialError }: { initialError?: string }) {
               <div className="dropzone-icon">⤓</div>
               <div className="dropzone-title">Drop your file here</div>
               <div className="dropzone-subtitle">
-                .md, .markdown, .html — or click to browse
+                .md, .markdown, .html, .pdf — or click to browse
               </div>
             </>
           )}
@@ -128,7 +157,7 @@ export function PublishForm({ initialError }: { initialError?: string }) {
       <input type="hidden" name="content" value={content} />
       <input type="hidden" name="format" value={format} />
 
-      {/* Format toggle only shown in Paste mode; in Upload mode it's auto-detected */}
+      {/* Format toggle only shown in Paste mode (PDFs can't be pasted) */}
       {tab === "paste" && (
         <div className="format-row">
           <span className="field-label">Format</span>
@@ -190,7 +219,7 @@ export function PublishForm({ initialError }: { initialError?: string }) {
       {initialError === "empty" && (
         <p className="error-msg">Add a file or paste some content.</p>
       )}
-      {initialError === "format" && <p className="error-msg">Pick Markdown or HTML.</p>}
+      {initialError === "format" && <p className="error-msg">Pick Markdown, HTML, or PDF.</p>}
     </form>
   );
 }

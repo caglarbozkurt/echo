@@ -29,7 +29,7 @@ export const supabase = createClient(
 
 export interface DocumentRow {
   slug: string;
-  format: "html" | "md";
+  format: "html" | "md" | "pdf";
   content: string;
   password_hash: string | null;
   title: string | null;

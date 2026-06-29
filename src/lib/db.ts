@@ -6,7 +6,7 @@ import { supabase, type DocumentRow } from "@/lib/supabase";
 
 export type DocRow = {
   slug: string;
-  format: "html" | "md";
+  format: "html" | "md" | "pdf";
   content: string;
   password_hash: string | null;
   title: string | null;
