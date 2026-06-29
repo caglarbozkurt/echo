@@ -1,18 +1,20 @@
 # echo
 
-The agent-native way to share HTML and Markdown.
+The agent-native way to share HTML, Markdown, and PDF documents.
 
 ## What it is
 
 Drop a file. Get a short, optionally password-protected link. That's it.
 
-If you've ever generated an HTML report with Claude, a Markdown writeup with Cursor, or any standalone document you wanted to send to one person without setting up hosting — echo is for that.
+If you've ever generated an HTML report with Claude, a Markdown writeup with Cursor, exported a PDF from any tool, or otherwise had a standalone document you wanted to send to someone without setting up hosting — echo is for that.
 
 ## How it works
 
-Markdown renders as a clean article inside a paper-style card with a sticky navbar and an automatic table of contents on the left.
+**Markdown** renders as a clean article inside a paper-style card with a sticky navbar and an automatic table of contents on the left.
 
-HTML runs inside a sandboxed iframe, so scripts in your document can't reach the parent page or cookies. CDN-loaded charts and visualizations still work.
+**HTML** runs inside a sandboxed iframe, so scripts in your document can't reach the parent page or cookies. CDN-loaded charts and visualizations still work.
+
+**PDFs** stream to your browser's native PDF viewer — same chrome (navbar + copy-link), full-viewport rendering below.
 
 If you set a password, viewers see a gate before the content. The unlock cookie is per-document and expires after 24 hours.
 
@@ -20,8 +22,8 @@ If you set a password, viewers see a gate before the content. The unlock cookie 
 
 The home page has two tabs:
 
-- **Upload** (default) — drag a `.md` or `.html` file, or click to browse. Format is auto-detected.
-- **Paste** — drop in raw Markdown or HTML and pick the format manually.
+- **Upload** (default) — drag a `.md`, `.html`, or `.pdf` file, or click to browse. Format is auto-detected.
+- **Paste** — drop in raw Markdown or HTML and pick the format manually. (PDFs can't be pasted.)
 
 Optional title shows in the navbar. Optional password gates the doc behind a password prompt.
 
@@ -38,8 +40,21 @@ curl -X POST <host>/api/publish \
     "content": "# Hello\n\nFrom Claude.",
     "format": "md",
     "title": "Hello",
-    "password": "optional"
+    "password": "optional",
+    "indexable": false
   }'
+```
+
+PDFs are sent base64-encoded:
+
+```
+curl -X POST <host>/api/publish \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"content\": \"$(base64 -i my-report.pdf)\",
+    \"format\": \"pdf\",
+    \"title\": \"My report\"
+  }"
 ```
 
 Response:
@@ -55,7 +70,9 @@ For a drop-in skill spec, grab `/skill.md` from the home page and put it in your
 - Publish via web form or API
 - Markdown rendering with sanitization, TOC sidebar, heading anchors
 - HTML rendering in a sandboxed iframe
+- PDF rendering via the browser's native viewer
 - Per-document password gating (bcrypt-hashed, HMAC-signed unlock cookie)
+- Per-document SEO opt-in (default noindex)
 - A SKILL.md endpoint for AI agent consumption
 - No accounts, no rate limits, no billing — public alpha
 
@@ -65,7 +82,7 @@ For a drop-in skill spec, grab `/skill.md` from the home page and put it in your
 - Quotas tied to a small free tier and paid plans
 - Document versioning (publish updates without changing the URL)
 - An MCP server for runtimes that prefer it over SKILL.md
-- A machine-readable companion endpoint per doc, so other agents can ingest published content cleanly
+- Larger PDF support via Supabase Storage (today's cap is ~1.5 MB)
 
 ## Try it
 

@@ -25,7 +25,7 @@ export default async function Home({
     <>
       <main className="container">
       <h1 className="brand">echo</h1>
-      <p className="tagline">The agent-native way to share HTML and Markdown.</p>
+      <p className="tagline">The agent-native way to share HTML, Markdown, and PDF documents.</p>
 
       <div className="agent-callout">
         <div className="callout-header">

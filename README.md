@@ -1,91 +1,162 @@
 # echo
 
-Agent-native HTML/MD sharing. Drop a file, get a short link.
+> The agent-native way to share HTML, Markdown, and PDF documents.
 
-See [DESIGN.md](./DESIGN.md) for design notes and [log.md](./log.md) for the build journal.
+Drop a file, get a short, optionally password-protected link. Built for AI agents and humans — no hosting infrastructure required.
+
+**[Live demo →](https://echo-kappa-peach.vercel.app)**
+
+---
+
+## Why
+
+You generate HTML reports with Claude. Markdown writeups with Cursor. PDFs from a hundred different tools. Sharing them means either pasting raw content into chat (loses fidelity, can't password-protect), spinning up your own Vercel/Netlify (slow, overkill for a single doc), or using something like Tiiny.host (works, but not built for AI workflows).
+
+echo is the third option — purpose-built for the *"I just generated this, give me a link"* workflow, with a first-class agent surface (`SKILL.md`) so any agent runtime can publish without an MCP server.
+
+## Features
+
+- **Drop or paste** — drag `.md`, `.html`, or `.pdf` files into the homepage, or paste raw Markdown/HTML
+- **Markdown** renders as a clean article in a paper-style card with a sidebar TOC and heading anchors
+- **HTML** runs inside a sandboxed iframe (`sandbox="allow-scripts"`) — scripts can't escape to the parent origin
+- **PDFs** stream to the browser's native PDF viewer via a dedicated bytes route
+- **Password gate** — bcrypt-hashed, HMAC-signed unlock cookie, per-doc 24h expiry
+- **SEO opt-in** — per-doc `indexable` flag, default `noindex` (docs are share-by-link)
+- **`SKILL.md` endpoint** — drop-in instructions at `/skill.md` so Claude, Cursor, and other agent runtimes can publish to echo without an MCP server
 
 ## Stack
 
-- **Next.js 15** (App Router) on **Vercel**
-- **Supabase** (Postgres) for storage
-- `bcryptjs` for per-doc password hashing
-- `marked` + `isomorphic-dompurify` for Markdown rendering
-- HTML rendered inside a sandboxed iframe (`sandbox="allow-scripts"`)
+- **[Next.js 15](https://nextjs.org)** (App Router) on **[Vercel](https://vercel.com)**
+- **[Supabase](https://supabase.com)** Postgres for storage
+- **[marked](https://marked.js.org)** + **[sanitize-html](https://github.com/apostrophecms/sanitize-html)** for Markdown
+- **[bcryptjs](https://github.com/dcodeIO/bcrypt.js)** + Node `crypto` HMAC for per-doc password gating
+- **[Vercel Analytics](https://vercel.com/docs/analytics)** + **[Speed Insights](https://vercel.com/docs/speed-insights)**
 
-## Local development
+## Run it yourself
+
+### 1. Clone and install
 
 ```bash
+git clone https://github.com/caglarbozkurt/echo.git
+cd echo
 npm install
+```
+
+### 2. Create a Supabase project
+
+Sign up at [supabase.com](https://supabase.com) and create a new project (free tier is enough). Once it's provisioned:
+
+- Open the **SQL Editor** and paste the contents of [`db/schema.sql`](./db/schema.sql), then run.
+- Open **Settings → API** and copy the **Project URL** and the **secret key** (`sb_secret_…`).
+
+### 3. Environment
+
+```bash
 cp .env.example .env.local
-# Fill in SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ECHO_COOKIE_SECRET
-# Generate cookie secret: openssl rand -hex 32
+```
+
+Fill in `.env.local`:
+
+```bash
+SUPABASE_URL=https://<your-project>.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=sb_secret_…
+ECHO_COOKIE_SECRET=…   # openssl rand -hex 32
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+```
+
+### 4. Run
+
+```bash
 npm run dev
 ```
 
-Visit http://localhost:3000.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Deploy
+## Deploy to Vercel
 
-### 1. Create a Supabase project
+1. Push your fork to GitHub.
+2. [vercel.com](https://vercel.com) → **Add New** → **Project** → import the repo.
+3. Add the same four env vars under **Settings → Environment Variables**.
+4. Deploy. After the first deploy, set `NEXT_PUBLIC_BASE_URL` to your assigned production URL and redeploy once so the API responses and `SKILL.md` references the correct host.
 
-1. Go to [supabase.com](https://supabase.com) → New Project (free tier is fine for v0).
-2. Once provisioned, open the SQL editor and paste the contents of [`db/schema.sql`](./db/schema.sql). Run it.
-3. **Settings → API**: copy `Project URL` and `service_role` key.
+## API
 
-### 2. Push to GitHub
-
-```bash
-git init
-git add -A
-git commit -m "Initial commit"
-gh repo create echo --private --source=. --push
-# Or use the GitHub UI to create a repo and push manually.
-```
-
-### 3. Deploy to Vercel
-
-1. [vercel.com](https://vercel.com) → Add New → Project → import the repo.
-2. **Environment Variables**:
-   - `SUPABASE_URL` — from Supabase Settings → API
-   - `SUPABASE_SERVICE_ROLE_KEY` — same page
-   - `ECHO_COOKIE_SECRET` — random hex string (`openssl rand -hex 32`)
-   - `NEXT_PUBLIC_BASE_URL` — your production URL (no trailing slash). Update after first deploy if Vercel assigns a different URL.
-3. Deploy. Vercel builds and serves automatically on every push.
-
-## Usage
-
-### Publish via API
+`POST /api/publish` accepts JSON. No authentication in v0 — same risk profile as the web form (also open). Per-user tokens ship with v1 accounts.
 
 ```bash
 curl -X POST https://<your-domain>/api/publish \
   -H "Content-Type: application/json" \
   -d '{
-    "content": "# Hello\n\nThis is a test.",
+    "content": "# Hello",
     "format": "md",
     "password": "optional",
-    "title": "Test doc"
+    "title": "optional",
+    "indexable": false
   }'
 # → { "slug": "abc123xy", "url": "https://<your-domain>/d/abc123xy" }
 ```
 
-### Publish via web form
+PDFs are sent base64-encoded:
 
-Visit the home page, drop a file or paste content, hit Publish.
+```bash
+curl -X POST https://<your-domain>/api/publish \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"content\": \"$(base64 -i my.pdf)\",
+    \"format\": \"pdf\",
+    \"title\": \"My PDF\"
+  }"
+```
 
-### Use from an AI agent
+Full parameter reference is documented at [`/skill.md`](https://echo-kappa-peach.vercel.app/skill.md).
 
-A drop-in `SKILL.md` is served at `/skill.md`. Drop it into your Claude / Cursor / other-agent skills folder.
+## Use from an AI agent
 
-> v0 has no API auth — the web form and `POST /api/publish` are both open. Per-user auth ships with Supabase Auth in v1.
+`SKILL.md` is served dynamically at `/skill.md` with the production URL substituted in. It follows Anthropic's [skill format](https://docs.anthropic.com), so any agent runtime that reads skills will pick it up:
+
+```bash
+mkdir -p ~/.claude/skills/echo
+curl -sS https://echo-kappa-peach.vercel.app/skill.md \
+  -o ~/.claude/skills/echo/SKILL.md
+```
+
+In a new session, asking *"publish this writeup to echo"* will auto-trigger the skill — Claude will call `/api/publish` and return the share URL.
 
 ## Architecture
 
-- `src/app/api/publish/route.ts` — publish endpoint (no auth in v0)
-- `src/app/d/[slug]/page.tsx` — render with password gate (server action)
-- `src/lib/supabase.ts` — server-side Supabase client (service role)
-- `src/lib/db.ts` — `getDocBySlug` / `insertDoc` helpers
-- `src/lib/auth.ts` — bcrypt password verify + HMAC slug token for unlock cookies
-- `src/lib/markdown.ts` — MD → sanitized HTML, with heading IDs and TOC extraction
-- `db/schema.sql` — single `documents` table
+```
+src/
+├── app/
+│   ├── page.tsx                 # Homepage: form, agent callout, log feed
+│   ├── layout.tsx               # Metadata, OG tags, Analytics
+│   ├── actions.ts               # Server action for the web form
+│   ├── api/publish/route.ts     # JSON publish endpoint
+│   ├── d/[slug]/
+│   │   ├── page.tsx             # Render (md article / html iframe / pdf iframe)
+│   │   └── pdf/route.ts         # PDF byte stream (Content-Type: application/pdf)
+│   ├── published/[slug]/page.tsx
+│   └── skill.md/route.ts        # Dynamic SKILL.md with host substitution
+├── components/
+│   ├── PublishForm.tsx          # Client: tabs, dropzone, format detection
+│   ├── BrandHeader.tsx          # Sticky masthead with copy-link
+│   ├── TableOfContents.tsx      # MD doc sidebar
+│   ├── CopyButton.tsx
+│   └── Footer.tsx
+├── lib/
+│   ├── supabase.ts              # Server-only client (service role)
+│   ├── db.ts                    # getDocBySlug / insertDoc
+│   ├── auth.ts                  # bcrypt + HMAC unlock tokens
+│   ├── markdown.ts              # marked + sanitize-html, heading IDs, TOC
+│   └── baseUrl.ts
+└── config/log.ts                # Curated homepage log feed
+db/
+├── schema.sql                   # Single `documents` table
+└── migrations/                  # Idempotent ALTER scripts
+public/
+├── example.md                   # The "what is echo" doc
+└── robots.txt                   # /d/ crawlable, per-page noindex by default
+```
 
-HTML is rendered inside an `<iframe sandbox="allow-scripts">` for origin isolation. Markdown is sanitized with DOMPurify before render.
+## License
+
+[MIT](./LICENSE) — built by [Caglar Bozkurt](https://github.com/caglarbozkurt).
