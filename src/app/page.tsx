@@ -27,6 +27,19 @@ export default async function Home({
       <h1 className="brand">echo</h1>
       <p className="tagline">The agent-native way to share HTML, Markdown, and PDF documents.</p>
 
+      <a
+        href="https://github.com/caglarbozkurt/echo"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="oss-banner"
+      >
+        <span className="echo-badge oss">★ Open source</span>
+        <span className="oss-banner-text">
+          echo is MIT-licensed. Self-host it, customize it, or star the repo.
+        </span>
+        <span className="oss-banner-cta mono">View on GitHub →</span>
+      </a>
+
       <div className="agent-callout">
         <div className="callout-header">
           <span className="echo-badge agents">For agents</span>

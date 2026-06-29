@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 110" width="320" height="110">
+  <defs>
+    <style>
+      .brand {
+        font-family: ui-monospace, 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+        font-size: 72px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+      }
+      .word { fill: #0f172a; }
+      .cursor {
+        fill: #4f46e5;
+        animation: blink 1.2s steps(2) infinite;
+      }
+      @keyframes blink {
+        50% { opacity: 0; }
+      }
+    </style>
+  </defs>
+  <text x="20" y="80" class="brand word">echo<tspan class="cursor">_</tspan></text>
+</svg>

@@ -179,6 +179,44 @@ button {
   color: var(--text);
   background: var(--surface);
 }
+.echo-badge.oss {
+  color: var(--text);
+  background: var(--accent-soft);
+}
+
+/* Open-source banner — sits between tagline and agent callout */
+.oss-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  color: var(--text);
+  flex-wrap: wrap;
+  transition: transform 80ms ease, box-shadow 80ms ease;
+}
+.oss-banner:hover {
+  text-decoration: none;
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--border);
+}
+.oss-banner-text {
+  color: var(--text-2);
+  font-size: 14px;
+  flex: 1;
+  min-width: 180px;
+}
+.oss-banner-cta {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
 
 /* Shared header row for callout-style cards */
 .callout-header {

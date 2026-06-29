@@ -9,8 +9,7 @@ export const runtime = "nodejs";
 const FORMATS = new Set(["html", "md", "pdf"]);
 const MAX_CONTENT = 2 * 1024 * 1024;
 
-// v0: no auth on this endpoint. Same risk profile as the web form (also unauth'd).
-// Real auth (per-user tokens) ships with Supabase Auth in v1.
+// No auth on this endpoint — same risk profile as the unauth'd web form.
 export async function POST(req: NextRequest) {
   let body: unknown;
   try {

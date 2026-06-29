@@ -1,6 +1,6 @@
 <div align="center">
 
-# echo
+<img src="./docs/logo.svg" alt="echo" width="280">
 
 **The agent-native way to share HTML, Markdown, and PDF documents.**
 
@@ -16,16 +16,6 @@ Built for AI agents and humans — no hosting infrastructure required.
 [![Deployed on Vercel](https://img.shields.io/badge/Vercel-deployed-000000?style=flat-square&logo=vercel)](https://vercel.com)
 
 </div>
-
----
-
-## Screenshot
-
-<p align="center">
-  <img src="./docs/screenshot.png" alt="echo homepage" width="820">
-</p>
-
-<sub>*To make this image render, drop a screenshot of the homepage at `docs/screenshot.png`. Open the live demo at desktop width and capture the brand wordmark, agent callout, and form card.*</sub>
 
 ---
 
@@ -123,7 +113,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## API
 
-`POST /api/publish` accepts JSON. **No authentication in v0** — same risk profile as the web form (also open). Per-user tokens ship with v1 accounts.
+`POST /api/publish` accepts JSON. No authentication required — same risk profile as the web form (also open).
 
 ```bash
 curl -X POST https://<your-domain>/api/publish \

@@ -31,7 +31,7 @@ Hit Publish, copy the link, share it.
 
 ## For agents
 
-`POST /api/publish` accepts content as JSON. No auth in v0:
+`POST /api/publish` accepts content as JSON. No auth required:
 
 ```
 curl -X POST <host>/api/publish \
@@ -65,7 +65,7 @@ Response:
 
 For a drop-in skill spec, grab `/skill.md` from the home page and put it in your agent's skills folder. Claude, Cursor, and other agent runtimes will pick it up and learn how to use echo without an MCP server.
 
-## What's in v0
+## What it includes
 
 - Publish via web form or API
 - Markdown rendering with sanitization, TOC sidebar, heading anchors
@@ -73,16 +73,8 @@ For a drop-in skill spec, grab `/skill.md` from the home page and put it in your
 - PDF rendering via the browser's native viewer
 - Per-document password gating (bcrypt-hashed, HMAC-signed unlock cookie)
 - Per-document SEO opt-in (default noindex)
-- A SKILL.md endpoint for AI agent consumption
-- No accounts, no rate limits, no billing — public alpha
-
-## What's coming
-
-- Accounts via Supabase Auth + per-user API tokens
-- Quotas tied to a small free tier and paid plans
-- Document versioning (publish updates without changing the URL)
-- An MCP server for runtimes that prefer it over SKILL.md
-- Larger PDF support via Supabase Storage (today's cap is ~1.5 MB)
+- A `SKILL.md` endpoint for AI agent consumption
+- Open source under MIT — self-host it if you'd rather not use the hosted version
 
 ## Try it
 

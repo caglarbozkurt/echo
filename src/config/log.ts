@@ -17,7 +17,7 @@ export const logEntries: LogEntry[] = [
     date: "2026-05-23",
     title: "What is echo?",
     description:
-      "An intro to echo — what it is, how to publish, and what's coming next.",
-    url: "/d/wIr2I5GD",
+      "An intro to echo — what it is, how to publish, and how to use it from an agent.",
+    url: "/d/2Jp6gA7a",
   },
 ];
