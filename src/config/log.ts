@@ -14,7 +14,7 @@ export type LogEntry = {
 
 export const logEntries: LogEntry[] = [
   {
-    date: "2026-05-23",
+    date: "2026-06-29",
     title: "What is echo?",
     description:
       "An intro to echo — what it is, how to publish, and how to use it from an agent.",

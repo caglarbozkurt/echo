@@ -188,11 +188,11 @@ button {
 .oss-banner {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   background: var(--surface);
   border: 2px solid var(--border);
   border-radius: 10px;
-  padding: 14px 18px;
+  padding: 16px 18px;
   margin-bottom: 32px;
   box-shadow: var(--shadow);
   text-decoration: none;
@@ -205,17 +205,42 @@ button {
   transform: translate(1px, 1px);
   box-shadow: 2px 2px 0 var(--border);
 }
-.oss-banner-text {
-  color: var(--text-2);
-  font-size: 14px;
+.oss-banner-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  color: var(--text);
+}
+.oss-banner-content {
   flex: 1;
   min-width: 180px;
 }
-.oss-banner-cta {
-  font-size: 13px;
+.oss-banner-title {
   font-weight: 700;
+  font-size: 15px;
   color: var(--text);
-  white-space: nowrap;
+}
+.oss-banner-text {
+  color: var(--text-2);
+  font-size: 13px;
+  margin-top: 2px;
+}
+.oss-banner-badges {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+  align-items: center;
+}
+.oss-banner-badges img {
+  height: 24px;
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .oss-banner-badges {
+    width: 100%;
+    flex-wrap: wrap;
+  }
 }
 
 /* Shared header row for callout-style cards */
