@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { nanoid } from "nanoid";
-import bcrypt from "bcryptjs";
-import { insertDoc } from "@/lib/db";
+import { createDocument, MAX_CONTENT_BYTES } from "@/lib/publish";
+import { isDocFormat } from "@/lib/formats";
 import { getBaseUrl } from "@/lib/baseUrl";
 
 export const runtime = "nodejs";
 
-const FORMATS = new Set(["html", "md", "pdf"]);
-const MAX_CONTENT = 2 * 1024 * 1024;
+const MAX_STRING_FIELD = 200;
 
 // No auth on this endpoint — same risk profile as the unauth'd web form.
 export async function POST(req: NextRequest) {
@@ -26,31 +24,36 @@ export async function POST(req: NextRequest) {
     indexable?: unknown;
   };
 
-  if (typeof content !== "string" || content.length === 0 || content.length > MAX_CONTENT) {
+  if (
+    typeof content !== "string" ||
+    content.length === 0 ||
+    content.length > MAX_CONTENT_BYTES
+  ) {
     return NextResponse.json({ error: "invalid_content" }, { status: 400 });
   }
-  if (typeof format !== "string" || !FORMATS.has(format)) {
+  if (!isDocFormat(format)) {
     return NextResponse.json({ error: "invalid_format" }, { status: 400 });
   }
-  if (password !== undefined && (typeof password !== "string" || password.length > 200)) {
+  if (
+    password !== undefined &&
+    (typeof password !== "string" || password.length > MAX_STRING_FIELD)
+  ) {
     return NextResponse.json({ error: "invalid_password" }, { status: 400 });
   }
-  if (title !== undefined && (typeof title !== "string" || title.length > 200)) {
+  if (
+    title !== undefined &&
+    (typeof title !== "string" || title.length > MAX_STRING_FIELD)
+  ) {
     return NextResponse.json({ error: "invalid_title" }, { status: 400 });
   }
   if (indexable !== undefined && typeof indexable !== "boolean") {
     return NextResponse.json({ error: "invalid_indexable" }, { status: 400 });
   }
 
-  const slug = nanoid(8);
-  const passwordHash =
-    typeof password === "string" && password.length > 0 ? await bcrypt.hash(password, 10) : null;
-
-  await insertDoc({
-    slug,
-    format: format as "html" | "md" | "pdf",
+  const slug = await createDocument({
     content,
-    password_hash: passwordHash,
+    format,
+    password: typeof password === "string" ? password : null,
     title: typeof title === "string" ? title : null,
     indexable: indexable === true,
   });

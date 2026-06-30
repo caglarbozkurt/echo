@@ -1,12 +1,12 @@
 -- ============================================
 -- echo — Database Schema
 -- Version: 0.1.0
--- Last Updated: 2026-05-23
--- Description: v0 schema — single documents table, no users yet
+-- Last Updated: 2026-06-29
+-- Description: Single documents table.
 -- ============================================
 
 -- ============================================
--- documents — published HTML/MD shares
+-- documents — published HTML/MD/PDF shares
 -- ============================================
 CREATE TABLE documents (
   slug TEXT PRIMARY KEY,
@@ -20,7 +20,7 @@ CREATE TABLE documents (
 
 CREATE INDEX idx_documents_created_at ON documents(created_at DESC);
 
-COMMENT ON TABLE documents IS 'Published HTML/MD documents shared via short URL';
+COMMENT ON TABLE documents IS 'Published HTML/MD/PDF documents shared via short URL';
 COMMENT ON COLUMN documents.slug IS '8-character nanoid, used as the share URL path';
 COMMENT ON COLUMN documents.format IS 'md = Markdown (server-rendered), html = HTML (sandboxed iframe), pdf = PDF (content is base64-encoded bytes)';
 COMMENT ON COLUMN documents.content IS 'Full document source, max 2 MB';
@@ -31,6 +31,7 @@ COMMENT ON COLUMN documents.indexable IS 'If true, search engines can index this
 -- ============================================
 -- Row Level Security
 -- ============================================
--- v0: all access goes through the service role key from the server.
--- Disable RLS to keep things simple; tighten when accounts ship in v1.
+-- All access flows through the service role key from the server, so RLS
+-- is intentionally disabled. Re-enable and add policies if you introduce
+-- per-user access (anon/authenticated reads, multi-tenant ownership, etc.).
 ALTER TABLE documents DISABLE ROW LEVEL SECURITY;

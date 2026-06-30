@@ -4,6 +4,7 @@ import { getDocBySlug } from "@/lib/db";
 import { CopyButton } from "@/components/CopyButton";
 import { Footer } from "@/components/Footer";
 import { getBaseUrl } from "@/lib/baseUrl";
+import { formatLabel } from "@/lib/formats";
 
 export const dynamic = "force-dynamic";
 
@@ -21,46 +22,40 @@ export default async function PublishedPage({
   return (
     <>
       <main className="container">
-      <h1 className="brand">echo</h1>
-      <p className="tagline">✓ Published.</p>
+        <h1 className="brand">echo</h1>
+        <p className="tagline">✓ Published.</p>
 
-      <div className="published-card">
-        <div className="published-url">{url}</div>
-        <div className="published-actions">
-          <CopyButton text={url} />
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="open-btn"
-          >
-            Open ↗
-          </a>
+        <div className="published-card">
+          <div className="published-url">{url}</div>
+          <div className="published-actions">
+            <CopyButton text={url} />
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="open-btn"
+            >
+              Open ↗
+            </a>
+          </div>
         </div>
-      </div>
 
-      <dl className="meta-list">
-        {doc.title && (
-          <>
-            <dt>Title</dt>
-            <dd>{doc.title}</dd>
-          </>
-        )}
-        <dt>Format</dt>
-        <dd>
-          {doc.format === "md"
-            ? "Markdown"
-            : doc.format === "html"
-              ? "HTML"
-              : "PDF"}
-        </dd>
-        <dt>Password</dt>
-        <dd>{doc.password_hash ? "Yes" : "No"}</dd>
-      </dl>
+        <dl className="meta-list">
+          {doc.title && (
+            <>
+              <dt>Title</dt>
+              <dd>{doc.title}</dd>
+            </>
+          )}
+          <dt>Format</dt>
+          <dd>{formatLabel(doc.format)}</dd>
+          <dt>Password</dt>
+          <dd>{doc.password_hash ? "Yes" : "No"}</dd>
+        </dl>
 
-      <Link href="/" className="link-primary">
-        Publish another →
-      </Link>
+        <Link href="/" className="link-primary">
+          Publish another →
+        </Link>
       </main>
       <Footer />
     </>

@@ -1,18 +1,22 @@
 /**
  * Document store — Supabase-backed.
+ * Same interface is shared by the server action and the REST endpoint.
  */
 
 import { supabase, type DocumentRow } from "@/lib/supabase";
+import type { DocFormat } from "@/lib/formats";
 
 export type DocRow = {
   slug: string;
-  format: "html" | "md" | "pdf";
+  format: DocFormat;
   content: string;
   password_hash: string | null;
   title: string | null;
   indexable: boolean;
   created_at: Date;
 };
+
+const SELECT_COLUMNS = "slug, format, content, password_hash, title, indexable, created_at";
 
 function rowToDoc(row: DocumentRow): DocRow {
   return {
@@ -24,7 +28,7 @@ function rowToDoc(row: DocumentRow): DocRow {
 export async function getDocBySlug(slug: string): Promise<DocRow | null> {
   const { data, error } = await supabase
     .from("documents")
-    .select("slug, format, content, password_hash, title, indexable, created_at")
+    .select(SELECT_COLUMNS)
     .eq("slug", slug)
     .maybeSingle<DocumentRow>();
 

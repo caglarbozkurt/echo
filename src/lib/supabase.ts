@@ -4,6 +4,7 @@
  */
 
 import { createClient } from "@supabase/supabase-js";
+import type { DocFormat } from "@/lib/formats";
 
 if (!process.env.SUPABASE_URL) {
   throw new Error("Missing env.SUPABASE_URL");
@@ -23,13 +24,9 @@ export const supabase = createClient(
   }
 );
 
-/**
- * Database row types
- */
-
 export interface DocumentRow {
   slug: string;
-  format: "html" | "md" | "pdf";
+  format: DocFormat;
   content: string;
   password_hash: string | null;
   title: string | null;
