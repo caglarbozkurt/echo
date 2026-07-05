@@ -27,15 +27,15 @@ echo is the third option — purpose-built for the *"I just generated this, give
 
 ## Features
 
-| | |
+| Feature | What it does |
 |---|---|
-| 📤 **Drop or paste** | Drag `.md`, `.html`, or `.pdf` files into the homepage, or paste raw Markdown/HTML |
-| 📝 **Markdown** | Renders as a clean article in a paper-style card with a sidebar TOC and heading anchors |
-| 🌐 **HTML** | Runs inside a sandboxed iframe (`sandbox="allow-scripts"`) — scripts can't escape to the parent origin |
-| 📄 **PDF** | Streams to the browser's native PDF viewer via a dedicated bytes route |
-| 🔒 **Password gate** | bcrypt-hashed, HMAC-signed unlock cookie, per-doc 24h expiry |
-| 🔍 **SEO opt-in** | Per-doc `indexable` flag — default `noindex` (docs are share-by-link) |
-| 🤖 **`SKILL.md`** | Drop-in instructions at `/skill.md` so Claude, Cursor, and other agents can publish without an MCP server |
+| **Drop or paste** | Drag `.md`, `.html`, or `.pdf` files into the homepage, or paste raw Markdown/HTML |
+| **Markdown rendering** | Sanitized server-render in a paper-style card with a sidebar TOC and heading anchors |
+| **HTML rendering** | Runs inside a sandboxed iframe (`sandbox="allow-scripts"`) — scripts can't escape to the parent origin |
+| **PDF rendering** | Streams to the browser's native PDF viewer via a dedicated bytes route |
+| **Password gate** | bcrypt-hashed passwords, HMAC-signed unlock cookies, per-doc 24-hour expiry |
+| **SEO opt-in** | Per-doc `indexable` flag — default `noindex` since docs are share-by-link |
+| **`SKILL.md` endpoint** | Drop-in instructions at `/skill.md` so Claude, Cursor, and other agents can publish without an MCP server |
 
 ## Architecture
 
@@ -193,6 +193,10 @@ public/
 ```
 
 </details>
+
+## Contributing
+
+Issues, feature ideas, and small PRs are welcome. For anything non-trivial, please open an issue first. See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full guidelines.
 
 ## License
 
